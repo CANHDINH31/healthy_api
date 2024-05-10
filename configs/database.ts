@@ -5,7 +5,13 @@ import { configs } from "./configuration";
 export const connectDB = async () => {
   try {
     await mongoose.connect(configs.DB_URL);
-    let ad = await userModel.findOne({ email: configs.ADMIN.email });
+    let ad = await userModel.findOne({
+      $or: [
+        { email: configs.ADMIN.email },
+        { username: configs.ADMIN.username },
+      ],
+    });
+
     if (!ad) {
       await userModel.create(configs.ADMIN);
     }
